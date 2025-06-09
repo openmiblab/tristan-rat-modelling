@@ -1,0 +1,6 @@
+tqdm==4.67.1
+pandas==2.3.0
+numpy==2.3.0
+matplotlib==3.10.3
+pydmr==0.0.3
+dcmri==0.6.17
