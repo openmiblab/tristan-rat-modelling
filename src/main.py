@@ -1,6 +1,4 @@
-from methods import plot, compute
+from methods import compute
 
 
-compute.all_results()
-plot.lines()
-plot.averages()
+compute.all()

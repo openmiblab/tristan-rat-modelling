@@ -4,11 +4,13 @@ from tqdm import tqdm
 import numpy as np
 import pydmr
 import dcmri as dc
+import miblab
 
 
 datapath = os.path.join(os.getcwd(), 'data')
-drugs = ['Asunaprevir','Bosentan','Cyclosporine','Ketoconazole',
-         'Pioglitazone','Rifampicin']
+if not os.path.exists(datapath):
+    os.makedirs(datapath)
+
 
 
 def tristan_rat(roi, par, **kwargs):
@@ -38,12 +40,12 @@ def tristan_rat(roi, par, **kwargs):
     return model.train(roi['time'], roi['liver'], **kwargs)
 
 
-def to_dmr(path, subj, study, pars):
+def to_dmr(path, subj, study, pars, dmr):
 
     # Build data dictionary
     dmr = {
-        'data': {},
-        'pars': {},   
+        'data': dmr['data'],
+        'pars': {(subj, study, key):val for key, val in dmr['pars'][subj][study].items() if key not in ['time','spleen','liver']},   
         'sdev': {},
     }
     for key, val in pars.items():
@@ -52,47 +54,36 @@ def to_dmr(path, subj, study, pars):
         dmr['sdev'][subj, study, key] = val[3]
 
     # Save as dmr file
-    visit = 'control' if study=='Day_1' else 'drug'
-    name = subj + '_' + visit
+    name = subj + '_' + study
     file = os.path.join(path, name + '.dmr')
     pydmr.write(file, dmr)
     return file
 
 
-# def split_data():
-#     # Temporary code - reformat data to one dmr file per drug.
+def all():
 
-#     # fetch data
-#     dmrfile = miblab.zenodo_fetch(
-#         'tristan_rats_healthy_six_drugs.dmr.zip',
-#         datapath,
-#         '15610261',
-#     )
-#     dmr = pydmr.read(dmrfile, 'nest')
-#     pars = dmr['pars']
-
-#     # Split into files
-#     for drug in drugs + ['saline/vehicle']:
-#         dmr_drug = {'data':dmr['data'], 'pars':{}, 'rois':{}}
-#         for subj in pars.keys():
-#             visit1 = list(pars[subj].keys())[0]
-#             if pars[subj][visit1]['substance'] == drug:
-#                 dmr_drug['pars'][subj] = dmr['pars'][subj]
-#                 dmr_drug['rois'][subj] = dmr['rois'][subj]
-#         name = drug.lower().replace('saline/vehicle','placebo')
-#         path = os.path.join(datapath, f'tristan_rats_healthy_{name}')
-#         pydmr.write(path, dmr_drug, 'nest')
-
-
-
-def all_results():
+    studies = [
+        'study_01_chronic_rifampicin_placebo',
+        'study_02_chronic_cyclosporine_placebo',
+        'study_03_single_bosentan',
+        'study_04_placebo_rifampicin',
+        'study_05_single_asunaprevir',
+        'study_06_single_pioglitazone',
+        'study_07_single_ketoconazole',
+        'study_08_single_cyclosporine',
+        'study_09_single_placebo',
+        'study_10_single_bosentan',
+        'study_11_control',
+        'study_12_single_rifampicin',
+        'study_13_field_strength',
+    ]
 
     # Loop over all datasets
-    for drug in tqdm(drugs + ['Placebo'], desc='Fitting..'):
+    for name in tqdm(studies, desc='Fitting..'):
 
         # Readt data
-        name = drug.lower()
-        dmrfile = os.path.join(datapath, f'tristan_rats_healthy_{name}')
+        #dmrfile = os.path.join(datapath, f'tristan_rats_{name}')
+        dmrfile = miblab.zenodo_fetch(f'tristan_rats_{name}.dmr.zip', datapath, '15644122')
         dmr = pydmr.read(dmrfile, 'nest')
 
         # To save results
@@ -116,22 +107,21 @@ def all_results():
 
                 # Save as dmr
                 rows = model.export_params()
-                to_dmr(drugresults, subj, visit, rows)
+                to_dmr(drugresults, subj, visit, rows, dmr)
 
                 # Save plot for QC
-                study = 'control' if visit=='Day_1' else 'drug'
                 fig = model.plot(
                     rois[subj][visit]['time'], 
                     rois[subj][visit]['liver'],
-                    fname = os.path.join(drugplots, subj + '_' + study + '.png'),
+                    fname = os.path.join(drugplots, subj + '_' + visit + '.png'),
                     show=False,
                 )
 
         # Combine dmr files per drug
         files = [os.path.join(drugresults, f) for f in os.listdir(drugresults)]
-        result = os.path.join(os.getcwd(), 'build', 'tristan_rats_healthy_'+name + '_all_results')
+        result = os.path.join(os.getcwd(), 'build', 'tristan_rats_'+name)
         pydmr.concat(files, result)
 
 
 if __name__=='__main__':
-    all_results()
+    all()
