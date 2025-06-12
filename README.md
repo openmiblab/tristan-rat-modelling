@@ -78,7 +78,7 @@ The work was performed as part of the [TRISTAN project](https://www.imi-tristan.
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/EShalom"><img src="https://avatars.githubusercontent.com/u/79933818?v=4" width="100px;" alt="Eve Shalom"/><br /><sub><b>Eve Shalom</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/EbonyGunwhy"><img src="https://avatars.githubusercontent.com/u/100941618?v=4" width="100px;" alt="Ebony Gunwhy"/><br /><sub><b>Ebony Gunwhy</b></sub></a><br /></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/plaresmedima"><img src="https://avatars.githubusercontent.com/u/6051075?v=4" width="100px;" alt="Steven Sourbron"/><br /><sub><b>Steven Sourbron</b></sub></a><br /></td>
     </tr>
   </tbody>
