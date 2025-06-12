@@ -8,7 +8,7 @@
 
 ## 📚 Context 
 
-The liver is responsible for filtering waste products from the blood, and evacuating these by excreting them to bile. Drugs commonly affect these procesesses, potentially leading to toxic side effects.
+The liver is responsible for filtering waste products from the blood, and evacuating these by excreting them to bile. Drugs commonly affect these processes, potentially leading to toxic side effects.
 
 If a drug inhibits excretion into the bile, then harmful material can get stuck in liver cells and cause damage to the liver. This is commonly referred to as drug-induced liver injury (DILI). If a drug on the other hand blocks the uptake of these materials into the liver, they will circulate in the blood for too long and may cause harm elsewehere.
 
