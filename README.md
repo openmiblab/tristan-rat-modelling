@@ -64,6 +64,12 @@ Physiologically-Based Kinetic Modelling to Predict Hepatic Transporter
 Mediated Drug–Drug Interactions in Rats. Pharmaceutics. 2023; 15(3):896. 
 `[DOI] <https://doi.org/10.3390/pharmaceutics15030896>`_ 
 
+## 💰 Funding 
+
+The work was performed as part of the [TRISTAN project](https://www.imi-tristan.eu/) on imaging biomarkers for drug toxicity. The project was EU-funded through the [Innovative Health Initiative](https://www.ihi.europa.eu/).
+
+[![TRISTAN](_static/tristan-logo.jpg)](https://www.imi-tristan.eu/)
+
 ## 👥 Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
