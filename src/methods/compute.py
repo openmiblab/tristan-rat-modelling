@@ -1,5 +1,6 @@
 # Import packages
 import os
+
 from tqdm import tqdm
 import numpy as np
 import pydmr
@@ -7,7 +8,7 @@ import dcmri as dc
 import miblab
 
 
-datapath = os.path.join(os.getcwd(), 'data')
+datapath = os.path.join(os.getcwd(), 'build', 'Inputs')
 if not os.path.exists(datapath):
     os.makedirs(datapath)
 
@@ -60,6 +61,47 @@ def to_dmr(path, subj, study, pars, dmr):
     return file
 
 
+def one_study(dmrfile, name):
+
+    dmr = pydmr.read(dmrfile, 'nest')
+
+    # To save results
+    drugresults = os.path.join(os.getcwd(), 'build', 'Results', name, 'Values')
+    drugplots = os.path.join(os.getcwd(), 'build', 'Results', name, 'Plots')
+    if not os.path.exists(drugresults):
+        os.makedirs(drugresults)
+    if not os.path.exists(drugplots):
+        os.makedirs(drugplots)
+
+    rois, pars = dmr['rois'], dmr['pars']
+
+    for subj in rois.keys():
+        for visit in pars[subj].keys():
+
+            roi = rois[subj][visit]
+            par = pars[subj][visit]
+
+            # Generate a trained model
+            model = tristan_rat(roi, par, xtol=1e-3)
+
+            # Save as dmr
+            rows = model.export_params()
+            to_dmr(drugresults, subj, visit, rows, dmr)
+
+            # Save plot for QC
+            fig = model.plot(
+                rois[subj][visit]['time'], 
+                rois[subj][visit]['liver'],
+                fname = os.path.join(drugplots, subj + '_' + visit + '.png'),
+                show=False,
+            )
+
+    # Combine dmr files per drug
+    files = [os.path.join(drugresults, f) for f in os.listdir(drugresults)]
+    result = os.path.join(os.getcwd(), 'build', 'Outputs', 'tristan_rats_'+name)
+    pydmr.concat(files, result)
+
+
 def all():
 
     studies = [
@@ -81,46 +123,12 @@ def all():
     # Loop over all datasets
     for name in tqdm(studies, desc='Fitting..'):
 
-        # Readt data
-        #dmrfile = os.path.join(datapath, f'tristan_rats_{name}')
+        # Read data
         dmrfile = miblab.zenodo_fetch(f'tristan_rats_{name}.dmr.zip', datapath, '15644122')
-        dmr = pydmr.read(dmrfile, 'nest')
+        
+        # Fit model
+        one_study(dmrfile, name)
 
-        # To save results
-        drugresults = os.path.join(os.getcwd(), 'build', name, 'Results')
-        drugplots = os.path.join(os.getcwd(), 'build', name, 'Plots')
-        if not os.path.exists(drugresults):
-            os.makedirs(drugresults)
-        if not os.path.exists(drugplots):
-            os.makedirs(drugplots)
-
-        rois, pars = dmr['rois'], dmr['pars']
-
-        for subj in rois.keys():
-            for visit in pars[subj].keys():
-
-                roi = rois[subj][visit]
-                par = pars[subj][visit]
-
-                # Generate a trained model
-                model = tristan_rat(roi, par, xtol=1e-3)
-
-                # Save as dmr
-                rows = model.export_params()
-                to_dmr(drugresults, subj, visit, rows, dmr)
-
-                # Save plot for QC
-                fig = model.plot(
-                    rois[subj][visit]['time'], 
-                    rois[subj][visit]['liver'],
-                    fname = os.path.join(drugplots, subj + '_' + visit + '.png'),
-                    show=False,
-                )
-
-        # Combine dmr files per drug
-        files = [os.path.join(drugresults, f) for f in os.listdir(drugresults)]
-        result = os.path.join(os.getcwd(), 'build', 'tristan_rats_'+name)
-        pydmr.concat(files, result)
 
 
 if __name__=='__main__':
