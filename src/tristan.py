@@ -8,26 +8,26 @@ from methods.compute import one_study
 
 if __name__=='__main__':
 
-    datapath = os.path.join(os.getcwd(), 'build', 'Inputs')
+    datapath = os.path.join(os.getcwd(), 'build', 'input_data')
     if not os.path.exists(datapath):
         os.makedirs(datapath)
 
     studies = [
-        'tristan_rats_study_01_rifampicin_effect_size.dmr',
-        'tristan_rats_study_02_rifampicin_effect_size.dmr',
-        'tristan_rats_study_03_rifampicin_effect_size.dmr',
-        'tristan_rats_study_04_rifampicin_effect_size.dmr',
-        'tristan_rats_study_05_single_asunaprevir.dmr',
-        'tristan_rats_study_06_single_pioglitazone.dmr',
-        'tristan_rats_study_07_single_ketoconazole.dmr',
-        'tristan_rats_study_08_single_cyclosporine.dmr',
-        'tristan_rats_study_09_single_bosentan_high.dmr',
-        'tristan_rats_study_10_single_bosentan.dmr',
-        'tristan_rats_study_11_chronic_bosentan_placebo.dmr',
-        'tristan_rats_study_12_single_rifampicin.dmr',
-        'tristan_rats_study_13_field_strength.dmr',
-        'tristan_rats_study_14_chronic_rifampicin_placebo.dmr',
-        'tristan_rats_study_15_chronic_cyclosporine_placebo.dmr',
+        'study_01_rifampicin_effect_size',
+        'study_02_rifampicin_effect_size',
+        'study_03_rifampicin_effect_size',
+        'study_04_rifampicin_effect_size',
+        'study_05_single_asunaprevir',
+        'study_06_single_pioglitazone',
+        'study_07_single_ketoconazole',
+        'study_08_single_cyclosporine',
+        'study_09_single_bosentan_high',
+        'study_10_single_bosentan',
+        'study_11_chronic_bosentan_placebo',
+        'study_12_single_rifampicin',
+        'study_13_field_strength',
+        'study_14_chronic_rifampicin_placebo',
+        'study_15_chronic_cyclosporine_placebo',
     ]
 
     # Loop over all datasets

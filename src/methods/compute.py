@@ -7,13 +7,6 @@ import pydmr
 import dcmri as dc
 
 
-
-datapath = os.path.join(os.getcwd(), 'build', 'Inputs')
-if not os.path.exists(datapath):
-    os.makedirs(datapath)
-
-
-
 def tristan_rat(roi, par, **kwargs):
 
     # High-resolution time points for prediction
@@ -66,8 +59,8 @@ def one_study(dmrfile, name):
     dmr = pydmr.read(dmrfile, 'nest')
 
     # To save results
-    drugresults = os.path.join(os.getcwd(), 'build', 'Results', name, 'Values')
-    drugplots = os.path.join(os.getcwd(), 'build', 'Results', name, 'Plots')
+    drugresults = os.path.join(os.getcwd(), 'build', 'per_subject_results', name, 'Values')
+    drugplots = os.path.join(os.getcwd(), 'build', 'per_subject_results', name, 'Plots')
     if not os.path.exists(drugresults):
         os.makedirs(drugresults)
     if not os.path.exists(drugplots):
@@ -98,8 +91,5 @@ def one_study(dmrfile, name):
 
     # Combine dmr files per drug
     files = [os.path.join(drugresults, f) for f in os.listdir(drugresults)]
-    result = os.path.join(os.getcwd(), 'build', 'Outputs', 'tristan_rats_'+name)
+    result = os.path.join(os.getcwd(), 'build', 'output_data', 'tristan_rats_'+name)
     pydmr.concat(files, result)
-
-
-
