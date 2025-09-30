@@ -1,11 +1,11 @@
 # Import packages
 import os
 
-from tqdm import tqdm
+
 import numpy as np
 import pydmr
 import dcmri as dc
-import miblab
+
 
 
 datapath = os.path.join(os.getcwd(), 'build', 'Inputs')
@@ -102,34 +102,4 @@ def one_study(dmrfile, name):
     pydmr.concat(files, result)
 
 
-def all():
 
-    studies = [
-        'study_01_chronic_rifampicin_placebo',
-        'study_02_chronic_cyclosporine_placebo',
-        'study_03_single_bosentan',
-        'study_04_placebo_rifampicin',
-        'study_05_single_asunaprevir',
-        'study_06_single_pioglitazone',
-        'study_07_single_ketoconazole',
-        'study_08_single_cyclosporine',
-        'study_09_single_placebo',
-        'study_10_single_bosentan',
-        'study_11_control',
-        'study_12_single_rifampicin',
-        'study_13_field_strength',
-    ]
-
-    # Loop over all datasets
-    for name in tqdm(studies, desc='Fitting..'):
-
-        # Read data
-        dmrfile = miblab.zenodo_fetch(f'tristan_rats_{name}.dmr.zip', datapath, '15644122')
-        
-        # Fit model
-        one_study(dmrfile, name)
-
-
-
-if __name__=='__main__':
-    all()
