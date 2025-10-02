@@ -1,17 +1,10 @@
 # Import packages
 import os
 
-from tqdm import tqdm
+
 import numpy as np
 import pydmr
 import dcmri as dc
-import miblab
-
-
-datapath = os.path.join(os.getcwd(), 'build', 'Inputs')
-if not os.path.exists(datapath):
-    os.makedirs(datapath)
-
 
 
 def tristan_rat(roi, par, **kwargs):
@@ -66,8 +59,8 @@ def one_study(dmrfile, name):
     dmr = pydmr.read(dmrfile, 'nest')
 
     # To save results
-    drugresults = os.path.join(os.getcwd(), 'build', 'Results', name, 'Values')
-    drugplots = os.path.join(os.getcwd(), 'build', 'Results', name, 'Plots')
+    drugresults = os.path.join(os.getcwd(), 'build', 'per_subject_results', name, 'Values')
+    drugplots = os.path.join(os.getcwd(), 'build', 'per_subject_results', name, 'Plots')
     if not os.path.exists(drugresults):
         os.makedirs(drugresults)
     if not os.path.exists(drugplots):
@@ -98,38 +91,5 @@ def one_study(dmrfile, name):
 
     # Combine dmr files per drug
     files = [os.path.join(drugresults, f) for f in os.listdir(drugresults)]
-    result = os.path.join(os.getcwd(), 'build', 'Outputs', 'tristan_rats_'+name)
+    result = os.path.join(os.getcwd(), 'build', 'output_data', 'tristan_rats_'+name)
     pydmr.concat(files, result)
-
-
-def all():
-
-    studies = [
-        'study_01_chronic_rifampicin_placebo',
-        'study_02_chronic_cyclosporine_placebo',
-        'study_03_single_bosentan',
-        'study_04_placebo_rifampicin',
-        'study_05_single_asunaprevir',
-        'study_06_single_pioglitazone',
-        'study_07_single_ketoconazole',
-        'study_08_single_cyclosporine',
-        'study_09_single_placebo',
-        'study_10_single_bosentan',
-        'study_11_control',
-        'study_12_single_rifampicin',
-        'study_13_field_strength',
-    ]
-
-    # Loop over all datasets
-    for name in tqdm(studies, desc='Fitting..'):
-
-        # Read data
-        dmrfile = miblab.zenodo_fetch(f'tristan_rats_{name}.dmr.zip', datapath, '15644122')
-        
-        # Fit model
-        one_study(dmrfile, name)
-
-
-
-if __name__=='__main__':
-    all()
