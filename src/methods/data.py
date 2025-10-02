@@ -183,7 +183,7 @@ def split_repeat_dose():
                     dmr_drug['pars'][subj] = pars_updated[subj]
                     dmr_drug['rois'][subj] = rois_updated[subj]
                 try:
-                    if pars_updated[subj][visit] == 'Day_1':
+                    if visit == 'Day_1':
                         dmr_drug['pars'][subj][visit]['substance']='Placebo'
                     else:
                         dmr_drug['pars'][subj][visit]['substance'] = substance[subj]
