@@ -43,7 +43,7 @@ def rename_keys(old_dict, replacements):
                 
     return new_dict
 
-datapath = os.path.join(os.getcwd(), 'data')
+datapath = os.path.join(os.getcwd(), 'input_data')
 
 
 def split_repro():
@@ -116,7 +116,7 @@ def split_repeat_dose():
         15: 'chronic_cyclosporine_placebo' # replace all S02 with S15
     }
     # Missing info to be added
-    substance = {
+    group = {
         'S14-03': 'Placebo',
         'S14-06': 'Placebo',
         'S14-09': 'Placebo',
@@ -170,25 +170,32 @@ def split_repeat_dose():
     for study in [11,14,15]:
         dmr_drug = {'data':dmr['data'], 'pars':{}, 'rois':{}}
         dmr_drug['data']['substance'] = ['What was injected, eg. saline, vehicle or drug name','','str']
+        dmr_drug['data']['study arm'] = ['Which study arm the subject was in (e.g. control or treatment)','','str']
         for subj in pars_updated.keys():
             # update study field to correct study number
             for visit in pars_updated[subj].keys():
+
+                # Substitute correct study numbers
                 if pars_updated[subj][visit]['study'] == 3:
-                    pars_updated[subj][visit].update({'study': 11})
-                if pars_updated[subj][visit]['study'] == 1:
-                    pars_updated[subj][visit].update({'study': 14})
+                    pars_updated[subj][visit]['study'] = 11
+                elif pars_updated[subj][visit]['study'] == 1:
+                    pars_updated[subj][visit]['study'] = 14
                 if pars_updated[subj][visit]['study'] == 2:
-                    pars_updated[subj][visit].update({'study': 15})
+                    pars_updated[subj][visit]['study'] = 15
+
+                # Add study and substance information
                 if pars_updated[subj][visit]['study'] == study:
-                    dmr_drug['pars'][subj] = pars_updated[subj]
-                    dmr_drug['rois'][subj] = rois_updated[subj]
-                try:
+                    pars_updated[subj][visit]['study arm'] = group[subj]
                     if visit == 'Day_1':
-                        dmr_drug['pars'][subj][visit]['substance']='Placebo'
+                        pars_updated[subj][visit]['substance'] = 'Placebo'
                     else:
-                        dmr_drug['pars'][subj][visit]['substance'] = substance[subj]
-                except KeyError:
-                    continue
+                        pars_updated[subj][visit]['substance'] = group[subj]
+
+            if pars_updated[subj][visit]['study'] == study:
+                dmr_drug['pars'][subj] = pars_updated[subj]
+                dmr_drug['rois'][subj] = rois_updated[subj]
+
+
         name = 'study_' + str(study).zfill(2) + '_' + study_name[study]
         path = os.path.join(datapath, f'tristan_rats_{name}')
         pydmr.write(path, dmr_drug, 'nest')

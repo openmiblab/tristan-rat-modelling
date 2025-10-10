@@ -18,20 +18,34 @@ def tristan_rat(roi, par, **kwargs):
     # Liver model with population input function
     model = dc.Liver(
 
+        kinetics = '1I-IC',
+        non_stationary = None,
+        sequence = 'SS',
+
         # Input parameters
         t = t,
         ca = ca,
 
-        # Acquisition parameters
+        # Parameters
         field_strength = par['field_strength'],
         TR = par['TR'],
         FA = par['FA'],
-        n0 = par['n0'],
+        agent = 'gadoxetate',
+        R10 = 1/dc.T1(par['field_strength'], 'liver'),
+        H = 0.418,         # Cremer et al, J Cereb Blood Flow Metab 3, 254-256 (1983)
+        ve = 0.23,         # mL/cm3
+        Fp = 0.022019,     # mL/sec/cm3
+                           # Fp = (1-H)*Fb, where Fb=2.27 mL/min/mL
+                           # calculated from Table S2 in 
+                           # doi: 10.1021/acs.molpharmaceut.1c00206
 
-        # Configure as in the TRISTAN-rat study
-        config = 'TRISTAN-rat',
+        free = {
+            'E': [0.0, 0.9], 
+            'Th': [0, np.inf],
+        },
     )
-    return model.train(roi['time'], roi['liver'], **kwargs)
+
+    return model.train(roi['time'], roi['liver'], n0=par['n0'], **kwargs)
 
 
 def to_dmr(path, subj, study, pars, dmr):
@@ -43,7 +57,11 @@ def to_dmr(path, subj, study, pars, dmr):
         'sdev': {},
     }
     for key, val in pars.items():
-        dmr['data'][key] = [val[0], val[2], 'float']
+        if isinstance(val[1], str):
+            par_type = 'str'
+        else:
+            par_type = 'float'
+        dmr['data'][key] = [val[0], val[2], par_type]
         dmr['pars'][subj, study, key] = val[1]
         dmr['sdev'][subj, study, key] = val[3]
 

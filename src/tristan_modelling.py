@@ -8,7 +8,7 @@ from methods.compute import one_study
 
 if __name__=='__main__':
 
-    datapath = os.path.join(os.getcwd(), 'build', 'input_data')
+    datapath = os.path.join(os.getcwd(), 'input_data')
     if not os.path.exists(datapath):
         os.makedirs(datapath)
 
