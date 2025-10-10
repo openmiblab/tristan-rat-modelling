@@ -1,7 +1,7 @@
 tqdm==4.67.1
 numpy==2.3.3
-pydmr==0.0.4
-dcmri==0.6.19
-miblab[data]==0.0.21
-pandas
-matplotlib
+pydmr==0.0.5
+dcmri
+miblab[data]==0.0.23
+pandas==2.3.3
+matplotlib==3.10.7

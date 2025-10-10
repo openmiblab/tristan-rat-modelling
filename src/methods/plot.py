@@ -262,9 +262,9 @@ def reproducibility():
     studies = 1 + np.arange(len(df))
 
     it = [
-        (0, 0, 'khe', 'mL/min/100cm3', (0,1000)), 
+        (0, 0, 'Ktrans', 'mL/min/100cm3', (0,150)), 
+        (1, 0, 'khe', 'mL/min/100cm3', (0,1000)), 
         (0, 1, 'kbh', 'mL/min/100cm3', (0,40)), 
-        (1, 0, 'Ktrans', 'mL/min/100cm3', (0,150)), 
         (1, 1, 'E', '%', (0,100)),
     ]
     for i, j, parameter, unit, ylim in it:
